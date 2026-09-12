@@ -1,0 +1,38 @@
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      SEARXNG_URL: http://searxng:8080
+      DATABASE_URL: postgresql+psycopg://seekos:seekos@postgres:5432/seekos
+      REDIS_URL: redis://redis:6379/0
+    depends_on:
+      - searxng
+      - postgres
+      - redis
+
+  searxng:
+    image: searxng/searxng:latest
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./searxng/settings.yml:/etc/searxng/settings.yml:ro
+    environment:
+      BASE_URL: http://localhost:8080/
+      INSTANCE_NAME: SeekOS Search
+
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: seekos
+      POSTGRES_USER: seekos
+      POSTGRES_PASSWORD: seekos
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:8-alpine
+
+volumes:
+  postgres_data:
