@@ -1,3 +1,4 @@
+import asyncio
 import time
 from urllib.parse import urlparse
 
@@ -8,7 +9,11 @@ class SearchOrchestrator:
     def __init__(self, providers):
         self.providers = providers
 
-    async def search(self, query: str, options: SearchOptions) -> SearchResponse:
+    async def search(
+        self,
+        query: str,
+        options: SearchOptions,
+    ) -> SearchResponse:
         started = time.perf_counter()
 
         provider_results = await self._search_providers(query, options)
@@ -33,23 +38,49 @@ class SearchOrchestrator:
 
         results = results[: options.limit]
 
-        took_ms = round((time.perf_counter() - started) * 1000)
+        took_ms = round(
+            (time.perf_counter() - started) * 1000
+        )
 
         return SearchResponse(
             query=query,
             results=results,
             metadata={
                 "total": len(results),
-                "providers": [name for name, _ in provider_results],
+                "providers": [
+                    name for name, _ in provider_results
+                ],
                 "took_ms": took_ms,
             },
         )
 
-    async def _search_providers(self, query: str, options: SearchOptions):
-        # Sequential for v0.1. We will move to concurrent execution once
-        # multiple providers exist and failure isolation is defined.
-        output = []
-        for provider in self.providers:
-            results = await provider.search(query, options)
-            output.append((provider.name, results))
+    async def _search_providers(
+        self,
+        query: str,
+        options: SearchOptions,
+    ) -> list[tuple[str, list[SearchResult]]]:
+
+        tasks = [
+            provider.search(query, options)
+            for provider in self.providers
+        ]
+
+        provider_results = await asyncio.gather(
+            *tasks,
+            return_exceptions=True,
+        )
+
+        output: list[tuple[str, list[SearchResult]]] = []
+
+        for provider, result in zip(
+            self.providers,
+            provider_results,
+        ):
+            if isinstance(result, Exception):
+                continue
+
+            output.append(
+                (provider.name, result)
+            )
+
         return output

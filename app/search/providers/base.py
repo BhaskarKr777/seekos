@@ -1,15 +1,14 @@
-from abc import ABC, abstractmethod
+from typing import Protocol
 
 from app.search.models import SearchOptions, SearchResult
 
 
-class SearchProvider(ABC):
+class SearchProvider(Protocol):
     name: str
 
-    @abstractmethod
     async def search(
         self,
         query: str,
         options: SearchOptions,
     ) -> list[SearchResult]:
-        raise NotImplementedError
+        ...
