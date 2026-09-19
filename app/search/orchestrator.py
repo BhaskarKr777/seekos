@@ -2,12 +2,18 @@ import asyncio
 import time
 from urllib.parse import urlparse
 
-from app.search.models import SearchOptions, SearchResponse, SearchResult
+from app.search.models import (
+    ProviderStatus,
+    SearchOptions,
+    SearchResponse,
+    SearchResult,
+)
 
 
 class SearchOrchestrator:
-    def __init__(self, providers):
+    def __init__(self, providers, provider_timeout: float = 5.0):
         self.providers = providers
+        self.provider_timeout = provider_timeout
 
     async def search(
         self,
@@ -16,7 +22,10 @@ class SearchOrchestrator:
     ) -> SearchResponse:
         started = time.perf_counter()
 
-        provider_results = await self._search_providers(query, options)
+        provider_results, provider_status = await self._search_providers(
+            query,
+            options,
+        )
 
         results: list[SearchResult] = []
         seen_urls: set[str] = set()
@@ -50,6 +59,7 @@ class SearchOrchestrator:
                 "providers": [
                     name for name, _ in provider_results
                 ],
+                "provider_status": provider_status,
                 "took_ms": took_ms,
             },
         )
@@ -58,10 +68,15 @@ class SearchOrchestrator:
         self,
         query: str,
         options: SearchOptions,
-    ) -> list[tuple[str, list[SearchResult]]]:
-
+    ) -> tuple[
+        list[tuple[str, list[SearchResult]]],
+        list[ProviderStatus],
+    ]:
         tasks = [
-            provider.search(query, options)
+            asyncio.wait_for(
+                provider.search(query, options),
+                timeout=self.provider_timeout,
+            )
             for provider in self.providers
         ]
 
@@ -71,16 +86,39 @@ class SearchOrchestrator:
         )
 
         output: list[tuple[str, list[SearchResult]]] = []
+        statuses: list[ProviderStatus] = []
 
         for provider, result in zip(
             self.providers,
             provider_results,
         ):
-            if isinstance(result, Exception):
+            if isinstance(result, asyncio.TimeoutError):
+                statuses.append(
+                    ProviderStatus(
+                        name=provider.name,
+                        status="timeout",
+                    )
+                )
                 continue
+
+            if isinstance(result, Exception):
+                statuses.append(
+                    ProviderStatus(
+                        name=provider.name,
+                        status="error",
+                    )
+                )
+                continue
+
+            statuses.append(
+                ProviderStatus(
+                    name=provider.name,
+                    status="success",
+                )
+            )
 
             output.append(
                 (provider.name, result)
             )
 
-        return output
+        return output, statuses

@@ -20,9 +20,15 @@ class SearchResult(BaseModel):
     score: float | None = None
 
 
+class ProviderStatus(BaseModel):
+    name: str
+    status: str
+
+
 class SearchMetadata(BaseModel):
     total: int
     providers: list[str]
+    provider_status: list[ProviderStatus]
     took_ms: int
 
 

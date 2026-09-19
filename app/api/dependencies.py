@@ -1,5 +1,7 @@
 from app.core.config import get_settings
+
 from app.search.orchestrator import SearchOrchestrator
+
 from app.search.providers.searxng import SearXNGProvider
 
 
@@ -10,5 +12,6 @@ provider = SearXNGProvider(
 )
 
 orchestrator = SearchOrchestrator(
-    providers=[provider]
+    providers=[provider],
+    provider_timeout=settings.provider_timeout,
 )

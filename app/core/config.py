@@ -9,6 +9,7 @@ class Settings(BaseSettings):
     environment: str = "development"
 
     searxng_url: str = "http://searxng:8080"
+    provider_timeout: float = 5.0
 
     database_url: str = "postgresql+psycopg://seekos:seekos@postgres:5432/seekos"
     redis_url: str = "redis://redis:6379/0"
