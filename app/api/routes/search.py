@@ -1,7 +1,8 @@
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 
-from app.api.dependencies import orchestrator
+from app.api.dependencies import get_orchestrator
 from app.search.models import SearchOptions, SearchResponse
+from app.search.orchestrator import SearchOrchestrator
 
 router = APIRouter()
 
@@ -13,6 +14,7 @@ async def search(
     limit: int = Query(10, ge=1, le=50),
     language: str | None = Query(None, min_length=2, max_length=10),
     time_range: str | None = Query(None),
+    orchestrator: SearchOrchestrator = Depends(get_orchestrator),
 ):
     options = SearchOptions(
         page=page,
@@ -28,3 +30,4 @@ async def search(
             status_code=502,
             detail="Search provider failed",
         ) from exc
+

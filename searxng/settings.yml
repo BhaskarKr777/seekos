@@ -3,14 +3,21 @@ use_default_settings:
     keep_only:
       - brave
       - duckduckgo
+      - bing
+      - wikipedia
+      - github
 
 general:
   instance_name: "SeekOS Search"
+  debug: false
 
 search:
+  safe_search: 0
+  autocomplete: ""
   formats:
     - html
     - json
 
 server:
   secret_key: "seekos-development-secret-change-me"
+  limiter: false

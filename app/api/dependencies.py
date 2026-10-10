@@ -1,17 +1,17 @@
 from app.core.config import get_settings
-
 from app.search.orchestrator import SearchOrchestrator
+from app.search.providers import default_registry
 
-from app.search.providers.searxng import SearXNGProvider
+
+def get_orchestrator() -> SearchOrchestrator:
+    settings = get_settings()
+    providers = default_registry.create_enabled_providers(settings)
+    return SearchOrchestrator(
+        providers=providers,
+        provider_timeout=settings.provider_timeout,
+    )
 
 
+# Default global instance for quick references
 settings = get_settings()
-
-provider = SearXNGProvider(
-    base_url=settings.searxng_url
-)
-
-orchestrator = SearchOrchestrator(
-    providers=[provider],
-    provider_timeout=settings.provider_timeout,
-)
+orchestrator = get_orchestrator()
