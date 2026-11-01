@@ -26,11 +26,11 @@ export function SearchBar({ initialQuery = '', onSearch, isLoading = false }: Se
 
   return (
     <form onSubmit={handleSubmit} className="w-full relative group">
-      <div className="relative flex items-center theme-input rounded-2xl shadow-lg shadow-[var(--shadow-color)] overflow-hidden transition-all duration-300">
+      <div className="relative flex items-center theme-input rounded-xl shadow-sm overflow-hidden transition-all duration-200">
         {/* Search Icon */}
-        <div className="pl-4 pr-2 flex items-center justify-center text-[var(--text-muted)] group-focus-within:text-[#c07597] transition-colors">
+        <div className="pl-4 pr-2 flex items-center justify-center text-[var(--text-muted)] group-focus-within:text-[var(--accent)] transition-colors">
           {isLoading ? (
-            <ClientIcon icon={Loader2} className="h-5 w-5 animate-spin text-[#c07597]" />
+            <ClientIcon icon={Loader2} className="h-5 w-5 animate-spin text-[var(--accent)]" />
           ) : (
             <ClientIcon icon={Search} className="h-5 w-5" />
           )}
@@ -62,7 +62,7 @@ export function SearchBar({ initialQuery = '', onSearch, isLoading = false }: Se
         <button
           type="submit"
           disabled={!query.trim() || isLoading}
-          className="absolute right-2 px-5 py-2.5 rounded-xl accent-button font-medium text-sm transition-all shadow-md disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+          className="absolute right-2 px-5 py-2.5 rounded-lg accent-button font-medium text-sm transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
         >
           Search
         </button>

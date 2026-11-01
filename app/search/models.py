@@ -8,6 +8,7 @@ class SearchOptions(BaseModel):
     limit: int = Field(default=10, ge=1, le=50)
     language: str | None = None
     time_range: str | None = None
+    category: str = "general"
 
 
 class SearchResult(BaseModel):
@@ -18,6 +19,13 @@ class SearchResult(BaseModel):
     domain: str | None = None
     published_at: datetime | None = None
     score: float | None = None
+    thumbnail_url: str | None = None
+    img_url: str | None = None
+    author: str | None = None
+    duration: str | None = None
+    price: str | None = None
+    currency: str | None = None
+    category: str | None = None
 
 
 class ProviderStatus(BaseModel):

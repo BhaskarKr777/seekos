@@ -4,15 +4,21 @@ import React, { useEffect, useState, useCallback, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Navbar } from '@/components/Navbar';
 import { SearchBar } from '@/components/SearchBar';
+import { SearchCategories } from '@/components/SearchCategories';
 import { SearchFilters } from '@/components/SearchFilters';
 import { ResultCard } from '@/components/ResultCard';
+import { ImageGallery } from '@/components/ImageGallery';
+import { VideoCard } from '@/components/VideoCard';
+import { NewsCard } from '@/components/NewsCard';
+import { ShoppingCard } from '@/components/ShoppingCard';
+import { SeekosLogo } from '@/components/SeekosLogo';
 import { ResultSkeleton } from '@/components/ResultSkeleton';
 import { MetadataBar } from '@/components/MetadataBar';
 import { Pagination } from '@/components/Pagination';
 import { ClientIcon } from '@/components/ClientIcon';
 import { fetchSearchResults } from '@/lib/api';
 import { SearchResponse, SearchOptions } from '@/types/search';
-import { Shield, Sparkles, RefreshCw, AlertCircle, Search, Terminal } from 'lucide-react';
+import { Shield, RefreshCw, AlertCircle, Search, Terminal } from 'lucide-react';
 
 function SearchContent() {
   const searchParams = useSearchParams();
@@ -23,26 +29,19 @@ function SearchContent() {
   const limitParam = Number(searchParams.get('limit')) || 10;
   const languageParam = searchParams.get('language') || null;
   const timeRangeParam = searchParams.get('time_range') || null;
+  const categoryParam = (searchParams.get('category') as SearchOptions['category']) || 'general';
 
   const [response, setResponse] = useState<SearchResponse | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const [options, setOptions] = useState<SearchOptions>({
+  const options: SearchOptions = {
     page: pageParam,
     limit: limitParam,
     language: languageParam,
     time_range: timeRangeParam,
-  });
-
-  useEffect(() => {
-    setOptions({
-      page: pageParam,
-      limit: limitParam,
-      language: languageParam,
-      time_range: timeRangeParam,
-    });
-  }, [pageParam, limitParam, languageParam, timeRangeParam]);
+    category: categoryParam,
+  };
 
   const executeSearch = useCallback(
     async (q: string, searchOpts: SearchOptions) => {
@@ -70,16 +69,21 @@ function SearchContent() {
 
   useEffect(() => {
     if (queryParam) {
-      executeSearch(queryParam, {
-        page: pageParam,
-        limit: limitParam,
-        language: languageParam,
-        time_range: timeRangeParam,
-      });
+      const timer = window.setTimeout(() => {
+        void executeSearch(queryParam, {
+          page: pageParam,
+          limit: limitParam,
+          language: languageParam,
+          time_range: timeRangeParam,
+          category: categoryParam,
+        });
+      }, 0);
+      return () => window.clearTimeout(timer);
     } else {
-      setResponse(null);
+      const timer = window.setTimeout(() => setResponse(null), 0);
+      return () => window.clearTimeout(timer);
     }
-  }, [queryParam, pageParam, limitParam, languageParam, timeRangeParam, executeSearch]);
+  }, [queryParam, pageParam, limitParam, languageParam, timeRangeParam, categoryParam, executeSearch]);
 
   const updateQueryParams = (newQuery: string, newOpts: SearchOptions) => {
     const params = new URLSearchParams();
@@ -88,6 +92,7 @@ function SearchContent() {
     if (newOpts.limit && newOpts.limit !== 10) params.set('limit', newOpts.limit.toString());
     if (newOpts.language) params.set('language', newOpts.language);
     if (newOpts.time_range) params.set('time_range', newOpts.time_range);
+    if (newOpts.category && newOpts.category !== 'general') params.set('category', newOpts.category);
 
     router.push(`/?${params.toString()}`);
   };
@@ -96,20 +101,27 @@ function SearchContent() {
     updateQueryParams(newQuery, { ...options, page: 1 });
   };
 
+  const handleCategoryChange = (newCategory: NonNullable<SearchOptions['category']>) => {
+    updateQueryParams(queryParam, { ...options, category: newCategory, page: 1 });
+  };
+
   const handleFilterChange = (updatedOptions: SearchOptions) => {
-    setOptions(updatedOptions);
     updateQueryParams(queryParam, updatedOptions);
   };
 
   const handleFilterReset = () => {
-    const resetOpts: SearchOptions = { page: 1, limit: 10, language: null, time_range: null };
-    setOptions(resetOpts);
+    const resetOpts: SearchOptions = {
+      page: 1,
+      limit: 10,
+      language: null,
+      time_range: null,
+      category: categoryParam,
+    };
     updateQueryParams(queryParam, resetOpts);
   };
 
   const handlePageChange = (newPage: number) => {
     const updatedOpts = { ...options, page: newPage };
-    setOptions(updatedOpts);
     updateQueryParams(queryParam, updatedOpts);
   };
 
@@ -127,29 +139,43 @@ function SearchContent() {
       <main className="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="mb-6 space-y-4">
           {!queryParam && (
-            <div className="text-center py-12 sm:py-18 space-y-4 animate-fade-in">
-              <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-input)] text-xs text-[#c07597] mb-2 font-medium">
-                <ClientIcon icon={Sparkles} className="h-3.5 w-3.5 text-[#4272a9]" />
-                <span>SeekOS v0.1 • Aesthetic Search</span>
+            <div className="text-center py-10 sm:py-16 space-y-4">
+              <div className="flex justify-center mb-1">
+                <SeekosLogo size="lg" showSubtitle={false} />
               </div>
-              <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-[var(--text-primary)]">
-                Search without <span className="accent-gradient-text">tracking</span>
+              <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-xs text-[var(--text-secondary)] font-medium shadow-xs">
+                <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span>Private metasearch engine</span>
+              </div>
+              <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight">
+                <span className="text-[var(--text-primary)]">Search without </span>
+                <span className="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">
+                  tracking
+                </span>
               </h1>
               <p className="text-[var(--text-secondary)] max-w-xl mx-auto text-base sm:text-lg">
-                Customizable, private, multi-provider search backend built with FastAPI, SearXNG, and Next.js.
+                Fast, private, multi-provider search engine with images, videos, news, and shopping filters.
               </p>
             </div>
           )}
 
-          <div className={queryParam ? 'max-w-4xl mx-auto' : 'max-w-2xl mx-auto'}>
+          <div className={queryParam ? 'max-w-4xl mx-auto space-y-3' : 'max-w-2xl mx-auto space-y-4'}>
             <SearchBar
               initialQuery={queryParam}
               onSearch={handleSearchTrigger}
               isLoading={isLoading}
             />
 
+            {/* Category Filter Tabs */}
+            <div className="flex items-center justify-between overflow-x-auto pt-1 pb-1">
+              <SearchCategories
+                category={categoryParam}
+                onChange={handleCategoryChange}
+              />
+            </div>
+
             {!queryParam && (
-              <div className="flex flex-wrap items-center justify-center gap-2 mt-4">
+              <div className="flex flex-wrap items-center justify-center gap-2 mt-2">
                 <span className="text-xs text-[var(--text-muted)] flex items-center gap-1 mr-1">
                   <ClientIcon icon={Terminal} className="h-3 w-3" /> Try searching:
                 </span>
@@ -157,7 +183,7 @@ function SearchContent() {
                   <button
                     key={prompt}
                     onClick={() => handleSearchTrigger(prompt)}
-                    className="px-3 py-1 rounded-full text-xs bg-[var(--bg-input)] hover:bg-[var(--bg-surface)] text-[var(--text-secondary)] hover:text-[#c07597] border border-[var(--border-subtle)] transition-colors cursor-pointer"
+                    className="px-3 py-1 rounded-full text-xs bg-[var(--bg-card)] hover:bg-[var(--bg-card-hover)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-[var(--border-subtle)] hover:border-[var(--accent)]/40 transition-all cursor-pointer shadow-xs"
                   >
                     {prompt}
                   </button>
@@ -183,14 +209,14 @@ function SearchContent() {
               <MetadataBar metadata={response.metadata} query={response.query} />
             )}
 
-            {isLoading && <ResultSkeleton />}
+            {isLoading && <ResultSkeleton category={categoryParam} />}
 
             {error && !isLoading && (
-              <div className="theme-card rounded-2xl p-6 text-center space-y-3 border-rose-900/40">
-                <div className="inline-flex p-3 rounded-full bg-rose-950/40 text-rose-400">
+              <div className="theme-card rounded-2xl p-6 text-center space-y-3 border-rose-500/30">
+                <div className="inline-flex p-3 rounded-full bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400">
                   <ClientIcon icon={AlertCircle} className="h-6 w-6" />
                 </div>
-                <h3 className="text-lg font-semibold text-rose-300">Search Error</h3>
+                <h3 className="text-lg font-semibold text-rose-600 dark:text-rose-400">Search Error</h3>
                 <p className="text-sm text-[var(--text-secondary)] max-w-md mx-auto">{error}</p>
                 <div className="pt-2">
                   <button
@@ -209,18 +235,45 @@ function SearchContent() {
                 <div className="inline-flex p-3 rounded-full bg-[var(--bg-input)] text-[var(--text-muted)]">
                   <ClientIcon icon={Search} className="h-6 w-6" />
                 </div>
-                <h3 className="text-lg font-semibold text-[var(--text-primary)]">No results found</h3>
+                <h3 className="text-lg font-semibold text-[var(--text-primary)]">
+                  No {categoryParam !== 'general' ? categoryParam : ''} results found
+                </h3>
                 <p className="text-sm text-[var(--text-secondary)] max-w-md mx-auto">
-                  We couldn&apos;t find any results matching &quot;{queryParam}&quot;. Try broadening your query or resetting filters.
+                  We couldn&apos;t find any {categoryParam !== 'general' ? categoryParam : 'results'} matching &quot;{queryParam}&quot;. Try broadening your query or switching category filters.
                 </p>
               </div>
             )}
 
             {response && response.results.length > 0 && !isLoading && (
               <div className="space-y-4">
-                {response.results.map((result, index) => (
-                  <ResultCard key={`${result.url}-${index}`} result={result} />
-                ))}
+                {/* Specialized Views depending on active category filter */}
+                {categoryParam === 'images' ? (
+                  <ImageGallery results={response.results} />
+                ) : categoryParam === 'videos' ? (
+                  <div className="space-y-3">
+                    {response.results.map((result, index) => (
+                      <VideoCard key={`${result.url}-${index}`} result={result} />
+                    ))}
+                  </div>
+                ) : categoryParam === 'news' ? (
+                  <div className="space-y-3">
+                    {response.results.map((result, index) => (
+                      <NewsCard key={`${result.url}-${index}`} result={result} />
+                    ))}
+                  </div>
+                ) : categoryParam === 'shopping' ? (
+                  <div className="space-y-3">
+                    {response.results.map((result, index) => (
+                      <ShoppingCard key={`${result.url}-${index}`} result={result} />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {response.results.map((result, index) => (
+                      <ResultCard key={`${result.url}-${index}`} result={result} />
+                    ))}
+                  </div>
+                )}
 
                 <Pagination
                   currentPage={options.page || 1}
@@ -235,8 +288,8 @@ function SearchContent() {
 
       <footer className="border-t border-[var(--border-subtle)] py-6 text-center text-xs text-[var(--text-muted)] space-y-1">
         <p className="flex items-center justify-center gap-1.5">
-          <ClientIcon icon={Shield} className="h-3.5 w-3.5 text-[#c07597]" />
-          SeekOS Search Engine • Aesthetic &amp; Private
+          <ClientIcon icon={Shield} className="h-3.5 w-3.5 text-[var(--accent)]" />
+          SeekOS Search Engine • Private by design
         </p>
       </footer>
     </div>

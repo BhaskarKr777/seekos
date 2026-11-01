@@ -16,7 +16,7 @@ export function Pagination({ currentPage, hasMore, onPageChange }: PaginationPro
       <button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage <= 1}
-        className="flex items-center space-x-1 px-4 py-2 rounded-xl theme-card text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[#c07597] disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer"
+        className="flex items-center space-x-1 px-4 py-2 rounded-xl theme-card text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--accent)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
       >
         <ClientIcon icon={ChevronLeft} className="h-4 w-4" />
         <span>Previous</span>
@@ -29,7 +29,7 @@ export function Pagination({ currentPage, hasMore, onPageChange }: PaginationPro
       <button
         onClick={() => onPageChange(currentPage + 1)}
         disabled={!hasMore}
-        className="flex items-center space-x-1 px-4 py-2 rounded-xl theme-card text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[#c07597] disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer"
+        className="flex items-center space-x-1 px-4 py-2 rounded-xl theme-card text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--accent)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
       >
         <span>Next</span>
         <ClientIcon icon={ChevronRight} className="h-4 w-4" />

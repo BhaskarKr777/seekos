@@ -16,7 +16,7 @@ export function MetadataBar({ metadata, query }: MetadataBarProps) {
       <div className="flex items-center space-x-3">
         <span>
           Found <strong className="text-[var(--text-primary)] font-semibold">{metadata.total}</strong> results for{' '}
-          <span className="text-[#c07597] font-semibold">&quot;{query}&quot;</span>
+          <span className="text-[var(--accent)] font-semibold">&quot;{query}&quot;</span>
         </span>
 
         <span className="flex items-center text-[var(--text-muted)]">
@@ -35,9 +35,9 @@ export function MetadataBar({ metadata, query }: MetadataBarProps) {
             return (
               <span
                 key={p.name}
-                className="inline-flex items-center px-2 py-0.5 rounded-lg text-[10px] bg-emerald-950/40 text-emerald-300 border border-emerald-800/40 font-mono"
+                className="inline-flex items-center px-2 py-0.5 rounded-lg text-[10px] font-mono bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800/40"
               >
-                <ClientIcon icon={CheckCircle2} className="h-2.5 w-2.5 mr-1 text-emerald-400" />
+                <ClientIcon icon={CheckCircle2} className="h-2.5 w-2.5 mr-1 text-emerald-500 dark:text-emerald-400" />
                 {p.name}
               </span>
             );
@@ -46,9 +46,9 @@ export function MetadataBar({ metadata, query }: MetadataBarProps) {
             return (
               <span
                 key={p.name}
-                className="inline-flex items-center px-2 py-0.5 rounded-lg text-[10px] bg-amber-950/40 text-amber-300 border border-amber-800/40 font-mono"
+                className="inline-flex items-center px-2 py-0.5 rounded-lg text-[10px] font-mono bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800/40"
               >
-                <ClientIcon icon={AlertTriangle} className="h-2.5 w-2.5 mr-1 text-amber-400" />
+                <ClientIcon icon={AlertTriangle} className="h-2.5 w-2.5 mr-1 text-amber-500 dark:text-amber-400" />
                 {p.name} (timeout)
               </span>
             );
@@ -56,9 +56,9 @@ export function MetadataBar({ metadata, query }: MetadataBarProps) {
           return (
             <span
               key={p.name}
-              className="inline-flex items-center px-2 py-0.5 rounded-lg text-[10px] bg-rose-950/40 text-rose-300 border border-rose-800/40 font-mono"
+              className="inline-flex items-center px-2 py-0.5 rounded-lg text-[10px] font-mono bg-rose-50 text-rose-700 border border-rose-200 dark:bg-rose-950/40 dark:text-rose-300 dark:border-rose-800/40"
             >
-              <ClientIcon icon={XCircle} className="h-2.5 w-2.5 mr-1 text-rose-400" />
+              <ClientIcon icon={XCircle} className="h-2.5 w-2.5 mr-1 text-rose-500 dark:text-rose-400" />
               {p.name} (error)
             </span>
           );

@@ -15,7 +15,7 @@ SeekOS is an open-source, self-hostable, privacy-focused, customizable search pl
 - **SafeSearch & Content Protection**: SafeSearch parameter enforcement and domain blocklist filtering for adult, torrent, or malicious URLs.
 - **Dark & Light Mode**: Dual theme switcher using custom palette tokens with persistent `localStorage` preference.
 - **Extensible Provider Architecture**: Decoupled `SearchProvider` protocol and `ProviderRegistry` for adding custom providers.
-- **Docker Compose Setup**: Services configured for API, Next.js Frontend, SearXNG, PostgreSQL, and Redis.
+- **Docker Compose Setup**: Services configured for API, Next.js Frontend, and SearXNG. No database or cache is required for search.
 
 ---
 
@@ -23,7 +23,7 @@ SeekOS is an open-source, self-hostable, privacy-focused, customizable search pl
 
 ### Option 1: Run with Docker Compose (Recommended)
 
-Start all services (API, Frontend, SearXNG, PostgreSQL, Redis):
+Start all services (API, Frontend, SearXNG):
 
 ```bash
 docker compose up --build
@@ -62,15 +62,14 @@ APP_VERSION=0.1.0
 ENVIRONMENT=development
 
 # Enabled search providers
-ENABLED_PROVIDERS=searxng
+ENABLED_PROVIDERS=duckduckgo
 
 # SearXNG endpoint & timeout
 SEARXNG_URL=http://searxng:8080
 PROVIDER_TIMEOUT=5.0
 
-# Database & Cache settings
-DATABASE_URL=postgresql+psycopg://seekos:POSTGRES_PASSWORD@postgres:5432/seekos
-REDIS_URL=redis://redis:6379/0
+# Frontend origins allowed to call the API (comma-separated)
+CORS_ORIGINS=http://localhost:3000
 ```
 
 ---

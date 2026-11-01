@@ -36,14 +36,14 @@ export function ResultCard({ result }: ResultCardProps) {
         <div className="flex items-center justify-between text-xs text-[var(--text-muted)] mb-2">
           <div className="flex items-center space-x-2 truncate pr-2">
             <span className="p-1 rounded-lg bg-[var(--bg-input)] border border-[var(--border-subtle)] text-[var(--text-secondary)]">
-              <ClientIcon icon={Globe} className="h-3.5 w-3.5 text-[#4272a9]" />
+              <ClientIcon icon={Globe} className="h-3.5 w-3.5 text-[var(--accent)]" />
             </span>
             <span className="font-medium text-[var(--text-secondary)] truncate">{domain}</span>
           </div>
 
           <div className="flex items-center space-x-2 shrink-0">
             {/* Provider Source Tag */}
-            <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full text-[10px] font-mono bg-[var(--bg-input)] text-[#c07597] border border-[#c07597]/30">
+            <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full text-[10px] font-mono bg-[var(--bg-input)] text-[var(--accent)] border border-[var(--border-subtle)]">
               <ClientIcon icon={Tag} className="h-2.5 w-2.5 mr-1" />
               {result.source}
             </span>
@@ -68,14 +68,14 @@ export function ResultCard({ result }: ResultCardProps) {
           href={result.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="group-hover:text-[#4272a9] text-[var(--text-primary)] font-semibold text-lg sm:text-xl leading-snug tracking-tight hover:underline flex items-start justify-between gap-2 transition-colors"
+          className="group-hover:text-[var(--accent)] text-[var(--text-primary)] font-semibold text-lg sm:text-xl leading-snug tracking-tight hover:underline flex items-start justify-between gap-2 transition-colors"
         >
           <span>{result.title}</span>
-          <ClientIcon icon={ExternalLink} className="h-4 w-4 shrink-0 text-[var(--text-muted)] group-hover:text-[#c07597] transition-colors mt-1" />
+          <ClientIcon icon={ExternalLink} className="h-4 w-4 shrink-0 text-[var(--text-muted)] group-hover:text-[var(--accent)] transition-colors mt-1" />
         </a>
 
         {/* URL breadcrumb */}
-        <div className="text-xs font-mono text-[#4272a9] truncate mt-1 mb-2.5">
+        <div className="text-xs font-mono text-[var(--accent)] truncate mt-1 mb-2.5">
           {result.url}
         </div>
 

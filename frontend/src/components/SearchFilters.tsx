@@ -19,7 +19,7 @@ export function SearchFilters({ options, onChange, onReset }: SearchFiltersProps
   return (
     <div className="flex flex-wrap items-center justify-between gap-3 py-3 px-4 theme-card rounded-xl text-xs sm:text-sm text-[var(--text-secondary)]">
       <div className="flex items-center space-x-2 font-medium">
-        <ClientIcon icon={Filter} className="h-4 w-4 text-[#c07597]" />
+        <ClientIcon icon={Filter} className="h-4 w-4 text-[var(--accent)]" />
         <span className="text-[var(--text-primary)]">Filters:</span>
       </div>
 
@@ -31,7 +31,7 @@ export function SearchFilters({ options, onChange, onReset }: SearchFiltersProps
             id="time-range"
             value={options.time_range || ''}
             onChange={(e) => onChange({ ...options, time_range: e.target.value || null, page: 1 })}
-            className="theme-input rounded-lg px-2.5 py-1 text-[var(--text-primary)] focus:outline-none focus:border-[#c07597] cursor-pointer"
+            className="theme-input rounded-lg px-2.5 py-1 text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)] cursor-pointer"
           >
             <option value="">Any time</option>
             <option value="day">Past 24 hours</option>
@@ -48,7 +48,7 @@ export function SearchFilters({ options, onChange, onReset }: SearchFiltersProps
             id="language"
             value={options.language || ''}
             onChange={(e) => onChange({ ...options, language: e.target.value || null, page: 1 })}
-            className="theme-input rounded-lg px-2.5 py-1 text-[var(--text-primary)] focus:outline-none focus:border-[#c07597] cursor-pointer"
+            className="theme-input rounded-lg px-2.5 py-1 text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)] cursor-pointer"
           >
             <option value="">All languages</option>
             <option value="en">English (en)</option>
@@ -65,7 +65,7 @@ export function SearchFilters({ options, onChange, onReset }: SearchFiltersProps
             id="limit"
             value={options.limit || 10}
             onChange={(e) => onChange({ ...options, limit: Number(e.target.value), page: 1 })}
-            className="theme-input rounded-lg px-2.5 py-1 text-[var(--text-primary)] focus:outline-none focus:border-[#c07597] cursor-pointer"
+            className="theme-input rounded-lg px-2.5 py-1 text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)] cursor-pointer"
           >
             <option value={10}>10 results</option>
             <option value={20}>20 results</option>
@@ -79,7 +79,7 @@ export function SearchFilters({ options, onChange, onReset }: SearchFiltersProps
           <button
             type="button"
             onClick={onReset}
-            className="flex items-center space-x-1 text-xs text-[#c07597] hover:text-[var(--text-primary)] px-2 py-1 rounded-lg border border-[#c07597]/40 bg-[var(--bg-surface)] transition-colors cursor-pointer"
+            className="flex items-center space-x-1 text-xs text-[var(--accent)] hover:text-[var(--text-primary)] px-2 py-1 rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-surface)] transition-colors cursor-pointer"
           >
             <ClientIcon icon={RotateCcw} className="h-3 w-3" />
             <span>Reset</span>

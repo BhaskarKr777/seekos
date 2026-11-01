@@ -6,6 +6,13 @@ export interface SearchResult {
   domain?: string | null;
   published_at?: string | null;
   score?: number | null;
+  thumbnail_url?: string | null;
+  img_url?: string | null;
+  author?: string | null;
+  duration?: string | null;
+  price?: string | null;
+  currency?: string | null;
+  category?: 'general' | 'images' | 'videos' | 'news' | 'shopping' | string | null;
 }
 
 export interface ProviderStatus {
@@ -31,4 +38,5 @@ export interface SearchOptions {
   limit?: number;
   language?: string | null;
   time_range?: string | null;
+  category?: 'general' | 'images' | 'videos' | 'news' | 'shopping';
 }

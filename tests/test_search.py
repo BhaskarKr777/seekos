@@ -103,3 +103,14 @@ async def test_search_times_out_slow_provider():
     assert response.metadata.provider_status[1].status == "timeout"
 
     assert len(response.results) == 1
+
+
+@pytest.mark.asyncio
+async def test_search_returns_empty_results_when_all_providers_fail():
+    orchestrator = SearchOrchestrator([FailingProvider()])
+
+    response = await orchestrator.search("RAG", SearchOptions(limit=10))
+
+    assert response.results == []
+    assert response.metadata.providers == []
+    assert response.metadata.provider_status[0].status == "error"

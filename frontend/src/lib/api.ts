@@ -1,6 +1,6 @@
 import { SearchOptions, SearchResponse } from '@/types/search';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
 
 export async function fetchSearchResults(
   query: string,
@@ -20,6 +20,9 @@ export async function fetchSearchResults(
   }
   if (options.time_range) {
     params.set('time_range', options.time_range);
+  }
+  if (options.category && options.category !== 'general') {
+    params.set('category', options.category);
   }
 
   const response = await fetch(`${API_BASE_URL}/api/v1/search?${params.toString()}`, {

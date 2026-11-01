@@ -14,6 +14,7 @@ async def search(
     limit: int = Query(10, ge=1, le=50),
     language: str | None = Query(None, min_length=2, max_length=10),
     time_range: str | None = Query(None),
+    category: str = Query("general", pattern="^(general|images|videos|news|shopping)$"),
     orchestrator: SearchOrchestrator = Depends(get_orchestrator),
 ):
     options = SearchOptions(
@@ -21,6 +22,7 @@ async def search(
         limit=limit,
         language=language,
         time_range=time_range,
+        category=category,
     )
 
     try:

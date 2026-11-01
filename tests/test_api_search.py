@@ -47,3 +47,35 @@ def test_api_search_validation_error():
     # Limit too large (>50) should fail validation with 422
     response = client.get("/api/v1/search?q=test&limit=100")
     assert response.status_code == 422
+
+
+def test_api_search_categories():
+    class CategoryMockProvider:
+        name = "mock"
+
+        async def search(self, query, options):
+            return [
+                SearchResult(
+                    title=f"{options.category.capitalize()} result for {query}",
+                    url="https://mock.example.com/item",
+                    snippet="Mock snippet text",
+                    source="mock",
+                    category=options.category,
+                    thumbnail_url="https://mock.example.com/thumb.jpg",
+                )
+            ]
+
+    def override_get_orchestrator():
+        return SearchOrchestrator([CategoryMockProvider()])
+
+    app.dependency_overrides[get_orchestrator] = override_get_orchestrator
+    try:
+        for cat in ["general", "images", "videos", "news", "shopping"]:
+            resp = client.get(f"/api/v1/search?q=test&category={cat}")
+            assert resp.status_code == 200
+            data = resp.json()
+            assert data["results"][0]["category"] == cat
+            assert data["results"][0]["thumbnail_url"] == "https://mock.example.com/thumb.jpg"
+    finally:
+        app.dependency_overrides.clear()
+
