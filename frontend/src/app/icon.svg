@@ -1,0 +1,31 @@
+<svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="44" height="44" rx="10" fill="#09090b"/>
+  <rect x="0.5" y="0.5" width="43" height="43" rx="9.5" fill="none" stroke="url(#border-grad)" stroke-width="1"/>
+  <defs>
+    <linearGradient id="seekos-brand-grad" x1="6" y1="6" x2="38" y2="38" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="35%" stop-color="#3b82f6"/>
+      <stop offset="70%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#a855f7"/>
+    </linearGradient>
+    <linearGradient id="border-grad" x1="0" y1="0" x2="44" y2="44" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#2563eb"/>
+      <stop offset="50%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </linearGradient>
+  </defs>
+  <path
+    d="M 30 14 C 29.5 9.5 25.5 8 21.5 8 C 15.5 8 12 12 12 17 C 12 23.5 19.5 23 22.5 25 C 25 26.6 25 29 22.5 30.5 C 19 32.5 14.5 31.5 12.5 28"
+    stroke="url(#seekos-brand-grad)"
+    stroke-width="3.6"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M 14 30 C 14.5 34.5 18.5 36 22.5 36 C 28.5 36 32 32 32 27 C 32 20.5 24.5 21 21.5 19 C 19 17.4 19 15 21.5 13.5 C 25 11.5 29.5 12.5 31.5 16"
+    stroke="url(#seekos-brand-grad)"
+    stroke-width="3.6"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+</svg>
