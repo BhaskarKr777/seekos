@@ -1,80 +1,157 @@
-# SeekOS — Open-Source Search Platform
+# SeekOS — Open-Source Private Search Engine
 
-SeekOS is an open-source, self-hostable, privacy-focused, customizable search platform with a modular FastAPI backend and a Next.js search UI.
+<p align="center">
+  <strong>A modern, privacy-focused, customizable metasearch engine with a Next.js interface and FastAPI backend.</strong>
+</p>
 
-## Overview & Status
-
-- **Milestone A (Backend)**: Complete, stable, documented, and fully verified with 12 automated unit/integration tests.
-- **Milestone B (Frontend)**: Built in `./frontend` using Next.js 16, TypeScript, and Tailwind CSS with dual (Dark & Light) theme support and SafeSearch filtering.
-
-### Key Capabilities
-
-- **FastAPI Async Backend API**: Endpoint `/api/v1/search` with OpenAPI documentation at `/docs`.
-- **Next.js Web Interface**: Search UI on `http://localhost:3000` with query URL synchronization, page pagination, result limit controls, and provider health badges.
-- **Universal Google / Bing Style Ranking**: Direct domain authority resolver and phrase relevance matcher prioritizing official brand portals (e.g., `rockstargames.com` for GTA 6, `samsung.com` for Samsung, `apple.com` for Apple App Store).
-- **SafeSearch & Content Protection**: SafeSearch parameter enforcement and domain blocklist filtering for adult, torrent, or malicious URLs.
-- **Dark & Light Mode**: Dual theme switcher using custom palette tokens with persistent `localStorage` preference.
-- **Extensible Provider Architecture**: Decoupled `SearchProvider` protocol and `ProviderRegistry` for adding custom providers.
-- **Docker Compose Setup**: Services configured for API, Next.js Frontend, and SearXNG. No database or cache is required for search.
+<p align="center">
+  <a href="https://seekos.vercel.app/"><img src="https://img.shields.io/badge/Live%20Demo-seekos.vercel.app-blue?style=for-the-badge&logo=vercel" alt="Live Demo" /></a>
+  <a href="https://seekos-x3ar.onrender.com/docs"><img src="https://img.shields.io/badge/API%20Docs-FastAPI%20Swagger-009688?style=for-the-badge&logo=fastapi" alt="API Docs" /></a>
+  <a href="#license"><img src="https://img.shields.io/badge/License-MIT-purple?style=for-the-badge" alt="License" /></a>
+</p>
 
 ---
 
-## Quick Start
+## 🌐 Live Deployments
 
-### Option 1: Run with Docker Compose (Recommended)
+| Component | Platform | URL |
+|---|---|---|
+| **Web Interface** | **Vercel** | [https://seekos.vercel.app](https://seekos.vercel.app/) |
+| **Search API** | **Render** | [https://seekos-x3ar.onrender.com](https://seekos-x3ar.onrender.com) |
+| **API Documentation** | **Render / Swagger** | [https://seekos-x3ar.onrender.com/docs](https://seekos-x3ar.onrender.com/docs) |
 
-Start all services (API, Frontend, SearXNG):
+---
+
+## 🌟 Key Features
+
+- 🛡️ **Privacy by Design**: Zero search history tracking, no fingerprinting, and no personalized ad targeting.
+- ⚡ **FastAPI High-Performance Async Backend**: Ultra-fast async query aggregation and streaming responses.
+- 🎨 **Sleek Next.js 16 Web UI**: Built with TypeScript and Tailwind CSS, featuring smooth Dark and Light theme toggling with persistent preferences.
+- 🔍 **Category Tabs**: Filter results seamlessly across **All**, **Images**, **Videos**, **News**, and **Shopping**.
+- 🧩 **Modular Search Providers**: Decoupled provider architecture supporting DuckDuckGo and self-hosted SearXNG engines with fallback resilience.
+- 🎯 **Universal Relevance Ranking**: Direct domain authority and brand matching that surfaces official portals first.
+- 🔒 **SafeSearch Protection**: Configurable SafeSearch and domain blocklist to filter out adult, malicious, or spam domains.
+- 🐳 **Self-Hostable**: Easily deployable with Docker Compose or as standalone cloud microservices (Vercel + Render).
+
+---
+
+## 🏗️ Architecture
+
+```text
+       ┌────────────────────────┐
+       │   Next.js 16 Web UI    │  https://seekos.vercel.app
+       └───────────┬────────────┘
+                   │
+                   ▼  REST API (/api/v1/search)
+       ┌────────────────────────┐
+       │    FastAPI Backend     │  https://seekos-x3ar.onrender.com
+       └───────────┬────────────┘
+                   │
+                   ▼
+       ┌────────────────────────┐
+       │   SearchOrchestrator   │
+       └───────────┬────────────┘
+                   │
+        ┌──────────┴──────────┐
+        ▼                     ▼
+┌──────────────┐      ┌──────────────┐
+│  DuckDuckGo  │      │   SearXNG    │
+│   Provider   │      │ (Optional)   │
+└──────────────┘      └──────────────┘
+        │                     │
+        └──────────┬──────────┘
+                   ▼
+┌──────────────────────────────────────┐
+│  Normalization & SafeSearch Filter   │
+└──────────────────┬───────────────────┘
+                   ▼
+┌──────────────────────────────────────┐
+│   Universal Relevance Ranking Engine │
+└──────────────────┬───────────────────┘
+                   ▼
+┌──────────────────────────────────────┐
+│       Standard SearchResponse       │
+└──────────────────────────────────────┘
+```
+
+---
+
+## 🚀 Quick Start (Local Development)
+
+### Prerequisites
+- Python 3.12+
+- Node.js 20+ & npm
+- *(Optional)* Docker & Docker Compose
+
+### 1. Run with Docker Compose (Full Stack)
+
+To run the frontend, backend, and a local SearXNG engine together:
 
 ```bash
 docker compose up --build
 ```
 
-Access services:
-- **Web App**: `http://localhost:3000`
-- **FastAPI API**: `http://localhost:8000`
-- **API Documentation**: `http://localhost:8000/docs`
-- **SearXNG Engine**: `http://localhost:8080`
-
-### Option 2: Run Locally for Development
-
-1. **Start Backend**:
-   ```bash
-   python -m uvicorn app.main:app --port 8000 --reload
-   ```
-
-2. **Start Frontend**:
-   ```bash
-   cd frontend
-   npm run dev
-   ```
-
-3. Open `http://localhost:3000` in your browser.
+- **Frontend**: [http://localhost:3000](http://localhost:3000)
+- **API**: [http://localhost:8000](http://localhost:8000)
+- **API Docs**: [http://localhost:8000/docs](http://localhost:8000/docs)
+- **SearXNG**: [http://localhost:8080](http://localhost:8080)
 
 ---
 
-## Environment Configuration
+### 2. Run Manually for Local Development
 
-Configure `.env` in the root directory:
+#### Start Backend:
+```bash
+# Install Python dependencies
+pip install -r requirements.txt
+
+# Start FastAPI development server
+uvicorn app.main:app --port 8000 --reload
+```
+
+#### Start Frontend:
+```bash
+cd frontend
+
+# Install dependencies
+npm install
+
+# Start Next.js development server
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+---
+
+## ⚙️ Environment Variables
+
+Create a `.env` file in the project root:
 
 ```env
 APP_NAME=SeekOS
 APP_VERSION=0.1.0
-ENVIRONMENT=development
+ENVIRONMENT=production
 
-# Enabled search providers
+# Enabled search providers (comma-separated: duckduckgo, searxng)
 ENABLED_PROVIDERS=duckduckgo
 
-# SearXNG endpoint & timeout
-SEARXNG_URL=http://searxng:8080
+# SearXNG instance endpoint (if enabled)
+SEARXNG_URL=http://localhost:8080
 PROVIDER_TIMEOUT=5.0
 
-# Frontend origins allowed to call the API (comma-separated)
-CORS_ORIGINS=http://localhost:3000
+# CORS Allowed Origins
+CORS_ORIGINS=https://seekos.vercel.app,http://localhost:3000
+```
+
+Frontend `.env.local` (inside `./frontend`):
+```env
+NEXT_PUBLIC_API_BASE_URL=https://seekos-x3ar.onrender.com
 ```
 
 ---
 
-## Running Tests
+## 🧪 Testing
 
 Run backend unit and integration test suite:
 
@@ -82,39 +159,16 @@ Run backend unit and integration test suite:
 python -m pytest
 ```
 
-Build and check frontend:
+Build and lint frontend:
 
 ```bash
 cd frontend
 npm run build
+npm run lint
 ```
 
 ---
 
-## Architecture Diagram
+## 📄 License
 
-```text
-Next.js Web UI (localhost:3000)
-         |
-         v
-   FastAPI (/api/v1/search)
-         |
-         v
-   SearchOrchestrator
-         |
-    +----+----+
-    |         |
-    v         v
- ProviderRegistry
-    |
-    +--> SearXNGProvider (searxng:8080 / Local Dev Fallback)
-    |
-    v
- SafeSearch & URL Canonicalization
-    |
-    v
- Universal Relevance Ranking Engine
-    |
-    v
- SeekOS SearchResponse Schema
-```
+This project is open-source under the [MIT License](LICENSE).
